@@ -1,48 +1,48 @@
-#include <stdlib.h>
 #include "lists.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 /**
- * insert_dnodeint_at_index - Inserts node at specified position
- * @h: pointer to the pointer that points to the list's head.
- * @idx: Index which new node should be inserted.
- * @n: Value to be stored in the new node.
- * Return: Address of the new node, or NULL if it failed.
+ * insert_dnodeint_at_index - inserts a new node at a given position
+ * @h: double pointer to the beginning of the linked list
+ * @idx: index at which to insert the new node
+ * @n: data to enter into new node
+ *
+ * Return: pointer to the new node, or NULL on failure
  */
-
-
-dlistint_t *insert_dnodeint_at_index(dlistint_t **h, unsigned int idx,
-int n)
+dlistint_t *insert_dnodeint_at_index(dlistint_t **h, unsigned int idx, int n)
 {
-dlistint_t *evolved_node, *up_to_date = *h;
-unsigned int mark = 0;
+	dlistint_t *new, *next, *current;
+	unsigned int i;
 
-if (*h == NULL || idx == 0)
-return (add_dnodeint(h, n));
-while (up_to_date != NULL)
-{
-if (mark >= idx - 1)
-break;
-
-up_to_date = up_to_date->next;
-mark++;
-}
-if (up_to_date == NULL)
-return (NULL);
-
-evolved_node = malloc(sizeof(dlistint_t));
-if (evolved_node == NULL)
-return (NULL);
-
-evolved_node->n = n;
-evolved_node->prev = up_to_date;
-evolved_node->next = up_to_date->next;
-if (up_to_date->next != NULL)
-{
-evolved_node->next = up_to_date->next;
-up_to_date->next->prev = evolved_node;
-}
-
-up_to_date->next = evolved_node;
-
-return (evolved_node);
+	if (h == NULL)
+		return (NULL);
+	if (idx != 0)
+	{
+		current = *h;
+		for (i = 0; i < idx - 1 && current != NULL; i++)
+			current = current->next;
+		if (current == NULL)
+			return (NULL);
+	}
+	new = malloc(sizeof(dlistint_t));
+	if (new == NULL)
+		return (NULL);
+	new->n = n;
+	if (idx == 0)
+	{
+		next = *h;
+		*h = new;
+		new->prev = NULL;
+	}
+	else
+	{
+		new->prev = current;
+		next = current->next;
+		current->next = new;
+	}
+	new->next = next;
+	if (new->next != NULL)
+		new->next->prev = new;
+	return (new);
 }
